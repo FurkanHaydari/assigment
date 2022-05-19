@@ -1,0 +1,45 @@
+### 
+GET http://127.0.0.1:8000/api/
+
+### 
+GET http://127.0.0.1:8000/api/allPassengers/
+
+### 
+GET http://127.0.0.1:8000/api/allTrips/
+
+###
+POST http://127.0.0.1:8000/api/createPassenger/
+Content-Type: application/json
+
+{   
+    
+    "name": "deneme2",
+    "email": "deneme2",
+    "status": "deneme2"
+}
+
+###
+POST http://127.0.0.1:8000/api/createTrip/
+Content-Type: application/json
+
+{   
+    "passenger_id":"1",
+    "totalDistance": "deneme3",
+    "startTime": "deneme3",
+    "status": "deneme3"
+}
+### 
+GET http://127.0.0.1:8000/api/update/?name=15
+Content-Type: application/json
+
+{   
+    
+    "name": "deneme",
+    "email": "deneme",
+    "status": "deneme"
+}
+
+
+### 
+DELETE http://127.0.0.1:8000/api/item/1/delete/
+
