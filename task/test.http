@@ -12,18 +12,18 @@ POST http://127.0.0.1:8000/api/createPassenger/
 Content-Type: application/json
 
 {   
-    
-    "name": "deneme2",
-    "email": "deneme2",
-    "status": "deneme2"
+    "name": "deneme2s3",
+    "email": "denemes2",
+    "status": "denemes2"
 }
+
 
 ###
 POST http://127.0.0.1:8000/api/createTrip/
 Content-Type: application/json
 
 {   
-    "passenger_id":"1",
+    
     "totalDistance": "deneme3",
     "startTime": "deneme3",
     "status": "deneme3"

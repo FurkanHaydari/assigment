@@ -27,15 +27,20 @@ def add_passenger(request):
     if Passenger.objects.filter(**request.data).exists():
         raise serializers.ValidationError('This data already exists')
 
+    # if item.is_valid():
+
     if item.is_valid():
         item.save()
-        return Response(item.data)
+        return Response(item.data, status=status.HTTP_201_CREATED)
     else:
-        print(item)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    # else:
+    #     print("******", item, "*******")
+    #     return Response(status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['POST'])
+
+@api_view(['POST', 'GET'])
 def add_trip(request):
     item = tripSerializer(data=request.data)
 
@@ -47,8 +52,7 @@ def add_trip(request):
         item.save()
         return Response(item.data)
     else:
-        print(item)
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 @api_view(['GET'])

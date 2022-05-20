@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from django.db.models import fields
 from rest_framework import serializers
 from .models import Passenger, Trip
@@ -6,12 +7,13 @@ from .models import Passenger, Trip
 class tripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        fields = ('totalDistance', 'startTime', 'status')
+        fields = '__all__'
 
 
 class passengerSerializer(serializers.ModelSerializer):
-    geziler = tripSerializer(many=True)
+
+    geziler = tripSerializer(many=True, read_only=True)
 
     class Meta:
         model = Passenger
-        fields = ('name', 'geziler', 'email', 'status')
+        fields = '__all__'
