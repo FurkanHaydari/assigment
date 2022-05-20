@@ -24,9 +24,10 @@ Content-Type: application/json
 
 {   
     
-    "totalDistance": "deneme3",
-    "startTime": "deneme3",
-    "status": "deneme3"
+    "totalDistance": "test",
+    "startTime": "test",
+    "status": "test",
+    "passenger":1
 }
 ### 
 GET http://127.0.0.1:8000/api/update/?name=15
