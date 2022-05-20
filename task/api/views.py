@@ -1,7 +1,6 @@
-from pickle import TRUE
+
 from rest_framework import serializers
 from rest_framework import status
-from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.decorators import api_view
