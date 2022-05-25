@@ -1,46 +1,124 @@
-### 
-GET http://127.0.0.1:8000/api/
+@token=cdbab911d923bad9fe77a3893c41a8f81217760f
+@localhost=http://127.0.0.1:8000
 
-### 
-GET http://127.0.0.1:8000/api/allPassengers/
 
-### 
-GET http://127.0.0.1:8000/api/allTrips/
 
-###
-POST http://127.0.0.1:8000/api/createPassenger/
+# KAYIT OL - KAYIT OL - KAYIT OL - KAYIT OL
+### 
+POST {{localhost}}/api/users/
 Content-Type: application/json
 
 {   
-    "name": "deneme2s3",
-    "email": "denemes2",
-    "status": "denemes2"
+    "username": "deneme",
+    "email": "deneme@deneme.com",
+    "password": "123asd_123asd",
+    "re_password": "123asd_123asd"
 }
 
 
+# GİRİŞ YAP - GİRİŞ YAP - GİRİŞ YAP - GİRİŞ YAP
+### 
+POST {{localhost}}/api/token/login
+Content-Type: application/json
+
+{   
+    "email": "deneme@deneme.com",
+    "password": "123asd_123asd"
+}
+
+# TOKEN ÇALIŞIYOR MU KONTROL ETME FONKSİYONU
+### 
+GET {{localhost}}/api/authDeneme
+Authorization: Token {{token}}
+
+
+# YOLCU OLUŞTUR - YOLCU OLUŞTUR - YOLCU OLUŞTUR
 ###
-POST http://127.0.0.1:8000/api/createTrip/
+POST {{localhost}}/api/createPassenger/
+Authorization: token {{token}}
+Content-Type: application/json
+
+{   
+    "name":"yolcu1",
+    "email": "yolcu1@yolcu1.com",
+    "status": "1"
+}
+
+# GEZİ OLUŞTUR - GEZİ OLUŞTUR - GEZİ OLUŞTUR
+###
+POST {{localhost}}/api/createTrip/
+Authorization: token {{token}}
+Content-Type: application/json
+
+{   
+    "passenger":1,
+    "totalDistance": "15 km",
+    "startTime": "15.30",
+    "status": "1"
+}
+
+
+
+# TÜM GEZİLER - TÜM GEZİLER - TÜM GEZİLER
+### 
+GET {{localhost}}/api/allTrips/
+Authorization: token {{token}}
+
+# TÜM YOLCULAR - TÜM YOLCULAR - TÜM YOLCULAR
+### 
+GET {{localhost}}/api/allPassengers/
+Authorization: token {{token}}
+
+
+
+# TEK YOLCU - TEK YOLCU - TEK YOLCU - TEK YOLCU 
+### 
+GET {{localhost}}/api/passenger/1
+Authorization: token {{token}}
+
+
+# TEK GEZİ - TEK GEZİ - TEK GEZİ - TEK GEZİ 
+### 
+GET {{localhost}}/api/trip/1
+Authorization: token {{token}}
+
+
+
+
+# Passenger Güncelle - Passenger Güncelle
+### 
+POST {{localhost}}/api/updatePassenger/1/
+Authorization: token {{token}}
 Content-Type: application/json
 
 {   
     
-    "totalDistance": "test",
-    "startTime": "test",
-    "status": "test",
-    "passenger":1
+    "name": "test",
+    "email": "test",
+    "status": "test"
 }
+
+# Trip Güncelle - Trip Güncelle - Trip Güncelle
 ### 
-GET http://127.0.0.1:8000/api/update/?name=15
+POST {{localhost}}/api/updateTrip/1/
+Authorization: token {{token}}
 Content-Type: application/json
 
 {   
-    
-    "name": "deneme",
-    "email": "deneme",
-    "status": "deneme"
+    "totalDistance": "145",
+    "startTime": "27",
+    "status": "1"
 }
 
-
+#YOLCU SİL-YOLCU SİL-YOLCU SİL-YOLCU SİL-YOLCU SİL
 ### 
-DELETE http://127.0.0.1:8000/api/item/1/delete/
+DELETE {{localhost}}/api/passenger/1/delete/
+Authorization: token {{token}}
 
+#GEZİ SİL- GEZİ SİL- GEZİ SİL- GEZİ SİL- GEZİ SİL- GEZİ SİL
+### 
+DELETE {{localhost}}/api/trip/1/delete/
+Authorization: token {{token}}
+
+###
+GET {{localhost}}/api/sendmail/

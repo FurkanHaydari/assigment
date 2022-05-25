@@ -1,20 +1,21 @@
-from django.contrib import admin
-from django.apps import apps
-
-class CustomAdmin(admin.ModelAdmin):
-    def __init__(self, model, admin_site):
-        self.list_display = [fields.name for fields in model._meta.fields]
-
-        super().__init__(model, admin_site)
+# from django.contrib import auth
+# from django.contrib import admin
+# from django.apps import apps
 
 
-models = apps.get_models()
+# class CustomAdmin(admin.ModelAdmin):
+#     def __init__(self, model, admin_site):
+#         self.list_display = [fields.name for fields in model._meta.fields]
 
-from django.contrib import auth
+#         super().__init__(model, admin_site)
 
-for model in models:
-    try:
-        if model not in (auth.models.Group, auth.models.User):
-            admin.site.register(model, CustomAdmin)
-    except admin.sites.AlreadyRegistered:
-        pass
+
+# models = apps.get_models()
+
+
+# for model in models:
+#     try:
+#         if model not in (auth.models.Group, auth.models.User):
+#             admin.site.register(model, CustomAdmin)
+#     except admin.sites.AlreadyRegistered:
+#         pass

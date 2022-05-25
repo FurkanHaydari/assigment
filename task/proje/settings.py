@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from re import T
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +26,19 @@ SECRET_KEY = 'django-insecure-iq2du*@(f!lh@j^r#pmj03)svnpqrw+hgulj(#@#kq(+nl$=-$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+AUTH_USER_MODEL = 'api.User'
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS':
+        {'user_create': 'api.serializer.UserCreateSerializer',
+         'user': 'api.serializer.UserCreateSerializer', }
+
+
+}
 
 # Application definition
 
@@ -38,7 +50,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'api.apps.ApiConfig',
+    'djoser',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +65,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSIONS_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 ROOT_URLCONF = 'proje.urls'
 
@@ -125,3 +151,27 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CELERY SETTINGS
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+
+CELERY_ACCEPT_CONTENT = ['application/json']
+
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = 'celeryfurkan@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'Celery_123'
+
+EMAIL_USE_TLS = True
+
+EMAIL_USE_SSL = False

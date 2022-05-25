@@ -1,32 +1,33 @@
-
-from rest_framework import serializers
-from rest_framework import status
-
-# Create your views here.
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, serializers
 from rest_framework.response import Response
+from .serializer import tripSerializer, passengerSerializer
 from .models import Passenger, Trip
-from .serializer import passengerSerializer, tripSerializer
+from .tasks import send_mail_to_users
 
 
 @api_view(['GET'])
-def ApiOverview(request):
-    api_urls = {
-        'anasayfa': 'Hosgeldin'
-    }
+def send_mail_to_all(request):
+    items = Trip.objects.all()
+    data = tripSerializer(items, many=True)
+    send_mail_to_users.delay(data.data)
+    return Response(status=status.HTTP_200_OK)
 
-    return Response(api_urls)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def restricted(request, *args, **kwargs):
+    return Response(data="TOKEN BAŞARILI ŞEKİLDE ÇALIŞIYOR", status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
-def add_passenger(request):
+@permission_classes([IsAuthenticated])
+def create_passenger(request):
     item = passengerSerializer(data=request.data)
 
-    # validating for already existing data
     if Passenger.objects.filter(**request.data).exists():
         raise serializers.ValidationError('This data already exists')
-
-    # if item.is_valid():
 
     if item.is_valid():
         item.save()
@@ -34,16 +35,12 @@ def add_passenger(request):
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # else:
-    #     print("******", item, "*******")
-    #     return Response(status=status.HTTP_404_NOT_FOUND)
 
-
-@api_view(['POST', 'GET'])
-def add_trip(request):
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_trip(request):
     item = tripSerializer(data=request.data)
 
-    # validating for already existing data
     if Trip.objects.filter(**request.data).exists():
         raise serializers.ValidationError('This data already exists')
 
@@ -55,15 +52,40 @@ def add_trip(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_one_passenger(request, pk):
+
+    items = Passenger.objects.get(pk=pk)
+
+    if items:
+        data = passengerSerializer(items)
+        return Response(data.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_one_trip(request, pk):
+
+    items = Trip.objects.get(pk=pk)
+
+    if items:
+        data = tripSerializer(items)
+        return Response(data.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def view_passengers(request):
 
-    # checking for the parameters from the URL
     if request.query_params:
         items = Passenger.objects.filter(**request.query_param.dict())
     else:
         items = Passenger.objects.all()
 
-    # if there is something in items else raise error
     if items:
         data = passengerSerializer(items, many=True)
         return Response(data.data)
@@ -72,15 +94,14 @@ def view_passengers(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def view_trips(request):
 
-    # checking for the parameters from the URL
     if request.query_params:
         items = Trip.objects.filter(**request.query_param.dict())
     else:
         items = Trip.objects.all()
 
-    # if there is something in items else raise error
     if items:
         data = tripSerializer(items, many=True)
         return Response(data.data)
@@ -89,10 +110,22 @@ def view_trips(request):
 
 
 @api_view(['POST'])
-def update_items(request, pk):
+@permission_classes([IsAuthenticated])
+def update_passenger(request, pk):
     item = Passenger.objects.get(pk=pk)
     data = passengerSerializer(instance=item, data=request.data)
-    print(data)
+    if data.is_valid():
+        data.save()
+        return Response(data.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_trip(request, pk):
+    item = Trip.objects.get(pk=pk)
+    data = tripSerializer(instance=item, data=request.data)
     if data.is_valid():
         data.save()
         return Response(data.data)
@@ -101,21 +134,22 @@ def update_items(request, pk):
 
 
 @api_view(['DELETE'])
-def delete_items(request, pk):
+@permission_classes([IsAuthenticated])
+def delete_passenger(request, pk):
     item = Passenger.objects.get(pk=pk)
-    item.delete()
-    return Response(status=status.HTTP_202_ACCEPTED)
+    if item:
+        item.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['GET'])
-def showAllModels(request):
-    yolcu = Passenger.objects.all()
-    gezi = Trip.objects.all()
-
-    yolcuSerializer = passengerSerializer(yolcu, many=True)
-    geziSerializer = tripSerializer(gezi, many=True)
-
-    print(yolcuSerializer, geziSerializer)
-    result = yolcuSerializer.data + geziSerializer.data
-
-    return Response(result)
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_trip(request, pk):
+    item = Trip.objects.get(pk=pk)
+    if item:
+        item.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
