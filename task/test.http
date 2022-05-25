@@ -52,7 +52,7 @@ Content-Type: application/json
 
 {   
     "passenger":1,
-    "totalDistance": "15 km",
+    "totalDistance": "1 km",
     "startTime": "15.30",
     "status": "1"
 }
